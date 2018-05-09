@@ -1,0 +1,21 @@
+﻿@model IEnumerable<Photos.Models.FileShareItem>
+
+
+@foreach (var item in Model)
+{
+    foreach (var tag in item.Tags)
+    {
+        <span class="label label-default">#tag</span>
+    }
+
+    <br />
+    foreach (var image in item.FileNames)
+    {
+        var path = "/UploadFiles/" + image;
+        <img src="@path" />
+    }
+    <br />
+
+    <hr />
+}
+

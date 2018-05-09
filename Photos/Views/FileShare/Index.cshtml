@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<link href="~/Content/bootstrap-tagsinput.css" rel="stylesheet" />
+
+<style type="text/css">
+    #dropZone {
+        background: gray;
+        border: black dashed 3px;
+        width: 200px;
+        padding: 50px;
+        text-align: center;
+        color: white;
+    }
+
+    #filesPrewiev img, #shares img {
+        width: 100px;
+        margin: 10px;
+    }
+
+    #shares span{
+        background-color: aquamarine;
+    }
+</style>
+
+<h2>Files to share</h2>
+
+
+<div id="dropZone">Drop files here</div>
+
+<ul id="uploadResult"> </ul>
+
+<div id="filePreview"></div>
+
+@using (Html.BeginForm("Create", "FileShare", FormMethod.Post))
+{
+    <input name="Tags" data-role="taginput" />
+    <input type="submit" class="btn btn-default" value="send" />
+}
+
+<h2>Shared</h2>
+
+<div id="shares">
+    @Html.Action("GetFileShares")
+</div>
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.filedrop.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+
+    <script>
+
+        $("form").keypress(function (e) {
+            //Enter key
+            if (e.which == 13) {
+                return false;
+            }
+        });
+
+    $(function () {
+        $('#dropZone').filedrop({
+            url: '@Url.Action("UploadFiles")',
+            paramname: 'file',
+            maxFiles: 5,
+            dragOver: function () {
+                $('#dropZone').css('background', 'blue');
+            },
+            dragLeave: function () {
+                $('#dropZone').css('background', 'gray');
+            },
+            drop: function () {
+                $('#dropZone').css('background', 'gray');
+            },
+            afterAll: function () {
+                $('#dropZone').html('The file(s) have been uploaded successfully!');
+            },
+            uploadFinished: function (i, file, response, time) {
+                $('#uploadResult').append('<li>' + file.name + '</li>');
+                var path = "~/UploadFiles/" + response;
+                $('FilePreview').append('<img scr=\'' + path + '\'>');
+            }
+        });
+    });
+    </script>
+
+}
